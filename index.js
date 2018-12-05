@@ -1,26 +1,26 @@
 const IV_LENGTH = 16;
 
-async function encryptBlob(input) {
+export async function encryptBlob(input) {
     return await encrypt(input, true, true);
 }
 
-async function decryptBlob(payload, jwk) {
+export async function decryptBlob(payload, jwk) {
     return await decrypt(payload, jwk, true, true);
 }
 
-async function encryptBase64(input) {
+export async function encryptBase64(input) {
     return await encrypt(input, false, false);
 }
 
-async function decryptBase64(payload, jwk) {
+export async function decryptBase64(payload, jwk) {
     return await decrypt(payload, jwk, false, false);
 }
 
-async function encryptBlobToBase64(input) {
+export async function encryptBlobToBase64(input) {
     return await encrypt(input, true, false);
 }
 
-async function decryptBase64ToBlob(payload, jwk) {
+export async function decryptBase64ToBlob(payload, jwk) {
     return await decrypt(payload, jwk, false, true);
 }
 
