@@ -1,0 +1,36 @@
+{
+  "name": "web-crypto-file-encryption",
+  "version": "0.0.1",
+  "description": "Encrypt & decrypt files in your browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gagyibenedek/frontend-file-encryption.git"
+  },
+  "keywords": [
+    "web crypto api",
+    "encryption"
+  ],
+  "author": "Benedek Gagyi (https://github.com/gagyibenedek)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gagyibenedek/frontend-file-encryption/issues"
+  },
+  "homepage": "https://github.com/gagyibenedek/frontend-file-encryption#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "jest": "^23.6.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "env"
+    ]
+  }
+}
