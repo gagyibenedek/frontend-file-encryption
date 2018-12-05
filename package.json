@@ -1,6 +1,6 @@
 {
   "name": "web-crypto-file-encryption",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Encrypt & decrypt files in your browser",
   "main": "index.js",
   "scripts": {
