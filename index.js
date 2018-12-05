@@ -1,25 +1,33 @@
 const IV_LENGTH = 16;
 
 async function encryptBlob(input) {
-    return await encrypt(input, true);
+    return await encrypt(input, true, true);
 }
 
 async function decryptBlob(payload, jwk) {
-    return await decrypt(payload, jwk, true);
+    return await decrypt(payload, jwk, true, true);
 }
 
 async function encryptBase64(input) {
-    return await encrypt(input, false);
+    return await encrypt(input, false, false);
 }
 
 async function decryptBase64(payload, jwk) {
-    return await decrypt(payload, jwk, false);
+    return await decrypt(payload, jwk, false, false);
 }
 
-async function encrypt(input, blob) {
+async function encryptBlobToBase64(input) {
+    return await encrypt(input, true, false);
+}
+
+async function decryptBase64ToBlob(payload, jwk) {
+    return await decrypt(payload, jwk, false, true);
+}
+
+async function encrypt(input, inputIsBlob, outputIsBlob) {
     const key = await window.crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
     const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
-    const inputArray = blob ? (await blobToArrayBuffer(input)).target.result : base64ToArrayBuffer(input);
+    const inputArray = inputIsBlob ? (await blobToArrayBuffer(input)).target.result : base64ToArrayBuffer(input);
     const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, inputArray);
     const payload = new Uint8Array(cipher.byteLength + iv.byteLength);
     payload.set(new Uint8Array(cipher));
@@ -27,18 +35,25 @@ async function encrypt(input, blob) {
     const exportedKey = await crypto.subtle.exportKey('jwk', key);
 
     return {
-        key: exportedKey,
-        payload: blob ? arrayBufferToBlob(payload) : arrayBufferToBase64(payload),
+        key: exportedKey.k,
+        payload: outputIsBlob ? arrayBufferToBlob(payload) : arrayBufferToBase64(payload),
     };
 }
 
-async function decrypt(payload, jwk, blob) {
+async function decrypt(payload, keyToken, inputIsBlob, outputIsBlob) {
+    const jwk = {
+        alg: "A256GCM",
+        ext: true,
+        k: keyToken,
+        key_ops: (2)["encrypt", "decrypt"],
+        kty: "oct",
+    }
     const key = await crypto.subtle.importKey('jwk', jwk, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-    const dataArray = blob ? (await blobToArrayBuffer(payload)).target.result : base64ToArrayBuffer(payload);
+    const dataArray = inputIsBlob ? (await blobToArrayBuffer(payload)).target.result : base64ToArrayBuffer(payload);
     const cipher = dataArray.slice(0, dataArray.byteLength - IV_LENGTH);
     const iv = dataArray.slice(cipher.byteLength, dataArray.byteLength);
     const deciphered = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, cipher);
-    const decipheredAsBlob = blob ? arrayBufferToBlob(deciphered) : arrayBufferToBase64(deciphered);
+    const decipheredAsBlob = outputIsBlob ? arrayBufferToBlob(deciphered) : arrayBufferToBase64(deciphered);
     return decipheredAsBlob;
 }
 
