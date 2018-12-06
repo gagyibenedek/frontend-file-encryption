@@ -45,7 +45,7 @@ async function decrypt(payload, keyToken, inputIsBlob, outputIsBlob) {
         alg: "A256GCM",
         ext: true,
         k: keyToken,
-        key_ops: (2)["encrypt", "decrypt"],
+        key_ops: ["encrypt", "decrypt"],
         kty: "oct",
     }
     const key = await crypto.subtle.importKey('jwk', jwk, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
